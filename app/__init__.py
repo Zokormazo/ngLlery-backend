@@ -2,10 +2,15 @@
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.restful import Api
+from app.resources.siteinfo import SiteInfo
+
 from config import config
 
-#create db object
+# Create db object
 db = SQLAlchemy()
+#create api object
+api = None
 
 def create_app(config_name):
     # Setup Flask app and load config.py
@@ -13,6 +18,12 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
+    # Initialize module objects
+
     db.init_app(app)
+
+    api = Api(app,prefix='/api')
+
+    api.add_resource(SiteInfo, '/site-info')
 
     return app
