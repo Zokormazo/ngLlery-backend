@@ -1,8 +1,9 @@
 #!env/bin/python
 #coding=utf8
 
-from app import create_app
+from app import create_app, db
 from flask.ext.script import Manager, Shell
+from flask.ext.migrate import Migrate, MigrateCommand
 
 from os import path, getenv
 
@@ -15,14 +16,17 @@ if path.exists('.env'):
             os.environ[var[0]] = var[1]
             os.putenv(var[0], var[1])
 
-# create app and script manager
+# create app, flask-script manager and flask-migrate migrate objects
 app = create_app(getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
+migrate = Migrate(app,db)
+
+# add db command to script manager
+manager.add_command("db", MigrateCommand)
 
 # define shell context
 def make_shell_context():
-    return dict(app=app)
-
+    return dict(app=app, db=db)
 # add shell command to script manager
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
