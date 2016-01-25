@@ -30,6 +30,22 @@ def make_shell_context():
 # add shell command to script manager
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
+# add test command to script manager
+@manager.command
+def test():
+    """Run the unit tests."""
+    import coverage
+    cov = coverage.coverage(branch=True, include='app/*')
+    cov.start()
+    import unittest
+    tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner(verbosity=2).run(tests)
+    cov.stop()
+    cov.save()
+    print('Coverage Summary:')
+    cov.report()
+    cov.erase()
+
 # run script manager
 
 if __name__ == "__main__":
