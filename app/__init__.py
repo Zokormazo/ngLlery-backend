@@ -3,7 +3,6 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
-from app.resources.siteinfo import SiteInfo
 
 from config import config
 
@@ -24,6 +23,23 @@ def create_app(config_name):
 
     api = Api(app,prefix='/api')
 
-    api.add_resource(SiteInfo, '/site-info')
+    from app.resources.config import ConfigResource
+    api.add_resource(ConfigResource, '/config')
+
+    from app.resources.auth import Login, Register
+    api.add_resource(Login, '/login')
+    api.add_resource(Register, '/register')
+
+    from app.resources.users import UserList, UserResource
+    api.add_resource(UserList, '/users')
+    api.add_resource(UserResource, '/user/<int:user_id>')
+
+    from app.resources.dashboard.users import DashboardUserList, DashboardUserResource, DashboardUserRolesResource
+    api.add_resource(DashboardUserList, '/dashboard/users')
+    api.add_resource(DashboardUserResource, '/dashboard/user/<int:user_id>')
+    api.add_resource(DashboardUserRolesResource, '/dashboard/user/<int:user_id>/roles/<string:role_name>')
+
+    from app.requests import blueprint as requests_blueprint
+    app.register_blueprint(requests_blueprint)
 
     return app

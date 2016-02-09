@@ -7,7 +7,10 @@ class Config:
     SITE_NAME = 'Argazkiak'
     SITE_DESCRIPTION = 'Gure familitxoko argazki bilduma'
 
-    USER_ENABLE_REGISTRATION = True
+    AUTH_ENABLE_REGISTRATION = True
+    AUTH_TOKEN_EXPIRATION_TIME = 600
+    AUTH_SECRET_KEY = 'My Secret Key'
+    AUTH_PASSWORD_SALT = 'AAAA'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

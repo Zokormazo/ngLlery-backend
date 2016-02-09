@@ -7,6 +7,8 @@ from flask.ext.migrate import Migrate, MigrateCommand
 
 from os import path, getenv
 
+from app.models import User, Role
+
 # load environment variables from .env
 if path.exists('.env'):
     print('Importing environment from .env...')
@@ -19,13 +21,6 @@ if path.exists('.env'):
 # create app, flask-script manager and flask-migrate migrate objects
 app = create_app(getenv('FLASK_CONFIG') or 'default')
 
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-  return response
-
 manager = Manager(app)
 migrate = Migrate(app,db)
 
@@ -34,9 +29,19 @@ manager.add_command("db", MigrateCommand)
 
 # define shell context
 def make_shell_context():
-    return dict(app=app, db=db)
+    return dict(app=app, db=db, User=User, Role=Role)
 # add shell command to script manager
 manager.add_command("shell", Shell(make_context=make_shell_context))
+
+# add seed command to script manager
+@manager.command
+def seed():
+    "Seed database"
+    admin_role = Role(name="admin")
+    poweruser_role = Role(name="poweruser")
+    db.session.add(admin_role)
+    db.session.add(poweruser_role)
+    db.session.commit()
 
 # add test command to script manager
 @manager.command
