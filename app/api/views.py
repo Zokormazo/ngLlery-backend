@@ -1,9 +1,5 @@
-from flask import Blueprint, request
-from datetime import datetime
-from app import db
-from app.models import User
-
-blueprint = Blueprint('requests', __name__)
+from flask import request
+from . import blueprint
 
 @blueprint.after_app_request
 def after_request(response):
@@ -21,3 +17,4 @@ def before_request():
             user.last_seen = datetime.utcnow()
             db.session.add(user)
             db.session.commit()
+

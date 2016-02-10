@@ -21,25 +21,7 @@ def create_app(config_name):
 
     db.init_app(app)
 
-    api = Api(app,prefix='/api')
-
-    from app.resources.config import ConfigResource
-    api.add_resource(ConfigResource, '/config')
-
-    from app.resources.auth import Login, Register
-    api.add_resource(Login, '/login')
-    api.add_resource(Register, '/register')
-
-    from app.resources.users import UserList, UserResource
-    api.add_resource(UserList, '/users')
-    api.add_resource(UserResource, '/user/<int:user_id>')
-
-    from app.resources.dashboard.users import DashboardUserList, DashboardUserResource, DashboardUserRolesResource
-    api.add_resource(DashboardUserList, '/dashboard/users')
-    api.add_resource(DashboardUserResource, '/dashboard/user/<int:user_id>')
-    api.add_resource(DashboardUserRolesResource, '/dashboard/user/<int:user_id>/roles/<string:role_name>')
-
-    from app.requests import blueprint as requests_blueprint
-    app.register_blueprint(requests_blueprint)
+    from app.api import blueprint as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix='/api')
 
     return app

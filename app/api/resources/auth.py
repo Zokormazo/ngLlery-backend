@@ -11,7 +11,7 @@ user_fields = {
     'roles': fields.List(fields.String(), attribute=lambda x: x.get_roles_string())
 }
 
-class Login(Resource):
+class LoginResource(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
@@ -32,7 +32,7 @@ class Login(Resource):
         else:
             abort(400, message='Invalid username/password')
 
-class Register(Resource):
+class RegisterResource(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')

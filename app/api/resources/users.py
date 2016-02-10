@@ -1,11 +1,18 @@
-from flask.ext.restful import Resource, fields, marshal, reqparse, abort
-from sqlalchemy.exc import IntegrityError
+from flask.ext.restful import Resource, fields, marshal, abort
 
 from app import db
-from app.models import User, Role
-from app.decorators import roles_required
+from app.models import User
+from app.decorators import login_required, roles_required
 
 user_fields = {
+    'id': fields.Integer,
+    'username': fields.String,
+    'registered_at': fields.DateTime,
+    'last_seen': fields.DateTime,
+    'roles': fields.List(fields.String(), attribute=lambda x: x.get_roles_string())
+}
+
+dash_user_fields = {
     'id': fields.Integer,
     'username': fields.String,
     'email': fields.String,
@@ -14,7 +21,23 @@ user_fields = {
     'roles': fields.List(fields.String(), attribute=lambda x: x.get_roles_string())
 }
 
-class DashboardUserList(Resource):
+class UserListResource(Resource):
+    decorators = [login_required]
+
+    def get(self):
+        users = User.query.all()
+        return {'users': [marshal(user, user_fields) for user in users]}
+
+class UserResource(Resource):
+    decorators = [login_required]
+
+    def get(self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, message="User not found")
+        return {'user': marshal(user, dash_user_fields) }
+
+class DashboardUserListResource(Resource):
     decorators = [roles_required('admin')]
 
     def __init__(self):
@@ -25,7 +48,7 @@ class DashboardUserList(Resource):
 
     def get(self):
         users = User.query.all()
-        return {'users': [marshal(user, user_fields) for user in users]}
+        return {'users': [marshal(user, dash_user_fields) for user in users]}
 
     def post(self):
         args = self.reqparse.parse_args(strict=True)
