@@ -45,6 +45,7 @@ class DashboardUserListResource(Resource):
         self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
         self.reqparse.add_argument('password', type=str, required=True, help='No password provided', location='json')
         self.reqparse.add_argument('email', type=str, required=True, help='No email provided', location='json')
+        super(DashboardUserListResource, self).__init__()
 
     def get(self):
         users = User.query.all()
@@ -69,6 +70,7 @@ class DashboardUserResource(Resource):
         self.reqparse.add_argument('username', type=str, location='json')
         self.reqparse.add_argument('email', type=str, location='json')
         self.reqparse.add_argument('password', type=str, location='json')
+        super(DashboardUserResource, self).__init__()
 
     def get(self, user_id):
         user = User.query.get(user_id)

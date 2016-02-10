@@ -16,7 +16,7 @@ class LoginResource(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
         self.reqparse.add_argument('password', type=str, required=True, help='No password provided', location='json')
-        super(Login, self).__init__()
+        super(LoginResource, self).__init__()
 
     def post(self):
         args = self.reqparse.parse_args(strict=True)
@@ -38,6 +38,7 @@ class RegisterResource(Resource):
         self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
         self.reqparse.add_argument('password', type=str, required=True, help='No password provided', location='json')
         self.reqparse.add_argument('email', type=str, required=True, help='No email provided', location='json')
+        super(RegisterResource, self).__init__()
 
     def post(self):
         args = self.reqparse.parse_args(strict=True)
