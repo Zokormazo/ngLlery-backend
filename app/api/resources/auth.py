@@ -52,7 +52,7 @@ class RegisterResource(Resource):
             user.set_password(args['password'])
             db.session.add(user)
             db.session.commit()
-            return 201
+            return '',201
         except IntegrityError:
             abort(400, message='username or email already exists')
 
