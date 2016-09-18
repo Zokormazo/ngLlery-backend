@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, abort
+from flask import request, abort, g
 
 from app.models import User
 
@@ -15,6 +15,7 @@ def login_required(f):
             user = User.verify_auth_token(token)
             if not user:
                 abort(401)
+            g.user = user
         return f(*args, **kwargs)        
     return decorated
 
@@ -31,6 +32,7 @@ def roles_required(*role_names):
                 user = User.verify_auth_token(token)
                 if not user:
                     abort(401)
+                g.user = user
 
                 # User must have the required roles
                 if not user.has_roles(*role_names):

@@ -31,8 +31,8 @@ class User(db.Model):
     def set_password(self, password):
         self.password = self._hash_password(password)
 
-    def generate_auth_token(self, expiration=600):
-        s = Serializer(current_app.config['AUTH_SECRET_KEY'], expires_in=expiration)
+    def generate_auth_token(self):
+        s = Serializer(current_app.config['AUTH_SECRET_KEY'], expires_in=current_app.config['AUTH_TOKEN_EXPIRATION_TIME'])
         return s.dumps({'id': self.id})
 
     def get_roles_string(self):

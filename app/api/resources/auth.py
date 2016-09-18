@@ -1,9 +1,12 @@
-from flask import current_app
+#coding=utf8
+
+from flask import current_app, g
 from flask.ext.restful import Resource, reqparse, fields, marshal, abort
 from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models import User
+from app.decorators import login_required
 
 user_fields = {
     'id': fields.Integer,
@@ -52,3 +55,10 @@ class RegisterResource(Resource):
             return 201
         except IntegrityError:
             abort(400, message='username or email already exists')
+
+class TokenResource(Resource):
+    decorators = [login_required]
+
+    def get(self):
+        token = g.user.generate_auth_token()
+        return { 'user': marshal(g.user, user_fields), 'token': token }

@@ -1,7 +1,10 @@
-from flask.ext.restful import Resource, fields, marshal, abort
+#coding=utf8
+
+from flask.ext.restful import Resource, fields, marshal, abort, reqparse
+from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.models import User
+from app.models import User, Role
 from app.decorators import login_required, roles_required
 
 user_fields = {
@@ -26,7 +29,7 @@ class UserListResource(Resource):
 
     def get(self):
         users = User.query.all()
-        return {'users': [marshal(user, user_fields) for user in users]}
+        return [marshal(user, user_fields) for user in users]
 
 class UserResource(Resource):
     decorators = [login_required]
@@ -49,7 +52,7 @@ class DashboardUserListResource(Resource):
 
     def get(self):
         users = User.query.all()
-        return {'users': [marshal(user, dash_user_fields) for user in users]}
+        return [marshal(user, dash_user_fields) for user in users]
 
     def post(self):
         args = self.reqparse.parse_args(strict=True)
@@ -58,7 +61,7 @@ class DashboardUserListResource(Resource):
             user.set_password(args['password'])
             db.session.add(user)
             db.session.commit()
-            return 204
+            return marshal(user, dash_user_fields)
         except IntegrityError:
             abort(400, message='username or email already exists')
 
@@ -76,7 +79,7 @@ class DashboardUserResource(Resource):
         user = User.query.get(user_id)
         if not user:
             abort(404, message='User not found')
-        return {'user': marshal(user, user_fields) }
+        return marshal(user, user_fields)
 
     def delete(self, user_id):
         user = User.query.get(user_id)
@@ -89,7 +92,7 @@ class DashboardUserResource(Resource):
         except IntegrityError:
             abort(400, message='Can not delete user')
 
-    def put(self, user_id):
+    def post(self, user_id):
         user = User.query.get(user_id)
         if not user:
             abort(404, message='User not found')
@@ -110,7 +113,7 @@ class DashboardUserResource(Resource):
 class DashboardUserRolesResource(Resource):
     decorators = [roles_required('admin')]
 
-    def put(self, user_id, role_name):
+    def post(self, user_id, role_name):
         user = User.query.get(user_id)
         if not user:
             abort(404, message='User not found')

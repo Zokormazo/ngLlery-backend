@@ -1,4 +1,8 @@
+#coding=utf8
+from datetime import datetime;
 from flask import request
+from app import db
+from app.models import User
 from . import blueprint
 
 @blueprint.after_app_request
