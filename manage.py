@@ -39,8 +39,12 @@ def seed():
     "Seed database"
     admin_role = Role(name="admin")
     poweruser_role = Role(name="poweruser")
+    admin_user = User(username="admin",email="admin@admin.com")
+    admin_user.set_password("admin")
+    admin_user.roles.append(admin_role)
     db.session.add(admin_role)
     db.session.add(poweruser_role)
+    db.session.add(admin_user)
     db.session.commit()
 
 # add test command to script manager
