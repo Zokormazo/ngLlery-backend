@@ -38,7 +38,7 @@ class UserResource(Resource):
         user = User.query.get(user_id)
         if not user:
             abort(404, message="User not found")
-        return {'user': marshal(user, dash_user_fields) }
+        return {'user': marshal(user, user_fields) }
 
 class DashboardUserListResource(Resource):
     decorators = [roles_required('admin')]
