@@ -79,7 +79,7 @@ class DashboardUserResource(Resource):
         user = User.query.get(user_id)
         if not user:
             abort(404, message='User not found')
-        return marshal(user, user_fields)
+        return marshal(user, dash_user_fields)
 
     def delete(self, user_id):
         user = User.query.get(user_id)
@@ -88,7 +88,7 @@ class DashboardUserResource(Resource):
         try:
             db.session.delete(user)
             db.session.commit()
-            return 204
+            return None,204
         except IntegrityError:
             abort(400, message='Can not delete user')
 
@@ -106,7 +106,7 @@ class DashboardUserResource(Resource):
                 user.set_password(args['password'])
             db.session.add(user)
             db.session.commit()
-            return 204
+            return None,204
         except IntegrityError:
             abort(400, message='Can not edit user')
 
@@ -121,12 +121,12 @@ class DashboardUserRolesResource(Resource):
         if not role:
             abort(404, message='Role not found')
         if role in user.roles:
-            return 200
+            return None,204
         try:
             user.roles.append(role)
             db.session.add(user)
             db.session.commit()
-            return 204
+            return None,204
         except IntegrityError:
             abort(400, message='Can not add role to user')
 
@@ -138,11 +138,11 @@ class DashboardUserRolesResource(Resource):
         if not role:
             abort(404, message='Role not found')
         if not role in user.roles:
-            return 200
+            return None,204
         try:
             user.roles.remove(role)
             db.session.add(user)
             db.session.commit()
-            return 204
+            return None,204
         except IntegrityError:
             abort(400, message='Can not delete role from user')
