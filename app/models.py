@@ -12,7 +12,7 @@ class User(db.Model):
 
     # User authentication information
     username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(255), nullable=False, server_default='')
+    password = db.Column(db.String(128))
 
     # User email information
     email = db.Column(db.String(255), nullable=False, unique=True)
@@ -92,8 +92,8 @@ class User(db.Model):
         user = User.query.get(data['id'])
         return user
 
-    # Private methods
-    def _hash_password(self, password):
+    @staticmethod
+    def _hash_password(password):
         return base64.b64encode(hmac.new(current_app.config['AUTH_PASSWORD_SALT'], password.encode('utf-8'), hashlib.sha512).digest())
 
 class Role(db.Model):
