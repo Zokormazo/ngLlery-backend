@@ -134,21 +134,6 @@ class ApiDashboardUserRolesResourceTestCase(unittest.TestCase):
         response = self.client.post(api.url_for(DashboardUserRolesResource,user_id=0,role_name='Role'), headers=self.get_headers('THIS_IS_AN_INVALID_TOKEN'))
         self.assertEqual(response.status_code,401)
 
-    def test_dashboard_user_roles_resource_post_with_expired_token(self):
-        u = User(username='test', email='test@test.com')
-        u.set_password('test')
-        db.session.add(u)
-        db.session.commit()
-        self.app.config['AUTH_TOKEN_EXPIRATION_TIME'] = 1
-        response = self.client.post(api.url_for(LoginResource),
-                                    data=json.dumps({'username': 'test', 'password': 'test'}),
-                                    headers=self.get_headers())
-        json_data = json.loads(response.data.decode('utf-8'))
-        token = json_data['token']
-        sleep(2)
-        response = self.client.post(api.url_for(DashboardUserRolesResource,user_id=0,role_name='Role'), headers=self.get_headers(token))
-        self.assertEqual(response.status_code,401)
-
     def test_dashboard_user_roles_resource_put(self):
         response = self.client.put(api.url_for(DashboardUserRolesResource,user_id=0,role_name='Role'), headers=self.get_headers())
         self.assertEqual(response.status_code,405)
