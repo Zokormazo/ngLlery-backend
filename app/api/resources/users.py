@@ -6,6 +6,7 @@ from flask import g
 from app import db
 from app.models import User, Role
 from app.decorators import login_required, roles_required
+from app.api.types import email
 
 user_fields = {
     'id': fields.Integer,
@@ -45,8 +46,8 @@ class ProfileResource(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', type=str, location='json')
-        self.reqparse.add_argument('password', type=str, location='json')
+        self.reqparse.add_argument('email', type=email, location='json')
+        self.reqparse.add_argument('password', location='json')
         super(ProfileResource, self).__init__()
 
     def get(self):
@@ -70,9 +71,9 @@ class DashboardUserListResource(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
-        self.reqparse.add_argument('password', type=str, required=True, help='No password provided', location='json')
-        self.reqparse.add_argument('email', type=str, required=True, help='No email provided', location='json')
+        self.reqparse.add_argument('username', required=True, help='No username provided', location='json')
+        self.reqparse.add_argument('password', required=True, help='No password provided', location='json')
+        self.reqparse.add_argument('email', type=email, required=True, help='No email provided', location='json')
         super(DashboardUserListResource, self).__init__()
 
     def get(self):
@@ -95,9 +96,9 @@ class DashboardUserResource(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, location='json')
-        self.reqparse.add_argument('email', type=str, location='json')
-        self.reqparse.add_argument('password', type=str, location='json')
+        self.reqparse.add_argument('username', location='json')
+        self.reqparse.add_argument('email', type=email, location='json')
+        self.reqparse.add_argument('password', location='json')
         super(DashboardUserResource, self).__init__()
 
     def get(self, user_id):

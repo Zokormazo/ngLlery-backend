@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from app import db
 from app.models import User
 from app.decorators import login_required
+from app.api.types import email
 
 user_fields = {
     'id': fields.Integer,
@@ -17,8 +18,8 @@ user_fields = {
 class LoginResource(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
-        self.reqparse.add_argument('password', type=str, required=True, help='No password provided', location='json')
+        self.reqparse.add_argument('username', required=True, help='No username provided', location='json')
+        self.reqparse.add_argument('password', required=True, help='No password provided', location='json')
         super(LoginResource, self).__init__()
 
     def post(self):
@@ -38,9 +39,9 @@ class LoginResource(Resource):
 class RegisterResource(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', type=str, required=True, help='No username provided', location='json')
-        self.reqparse.add_argument('password', type=str, required=True, help='No password provided', location='json')
-        self.reqparse.add_argument('email', type=str, required=True, help='No email provided', location='json')
+        self.reqparse.add_argument('username', required=True, help='No username provided', location='json')
+        self.reqparse.add_argument('password', required=True, help='No password provided', location='json')
+        self.reqparse.add_argument('email', type=email, required=True, help='No email provided', location='json')
         super(RegisterResource, self).__init__()
 
     def post(self):
