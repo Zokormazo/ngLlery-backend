@@ -2,7 +2,7 @@
 
 from flask.ext.restful import Resource, fields, marshal, abort, reqparse
 from sqlalchemy.exc import IntegrityError
-
+from flask import g
 from app import db
 from app.models import User, Role
 from app.decorators import login_required, roles_required
@@ -38,7 +38,32 @@ class UserResource(Resource):
         user = User.query.get(user_id)
         if not user:
             abort(404, message="User not found")
-        return {'user': marshal(user, user_fields) }
+        return marshal(user, user_fields)
+
+class ProfileResource(Resource):
+    decorators = [login_required]
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('email', type=str, location='json')
+        self.reqparse.add_argument('password', type=str, location='json')
+        super(ProfileResource, self).__init__()
+
+    def get(self):
+        return marshal(g.user, dash_user_fields)
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        try:
+            if args['email']:
+                g.user.email = args['email']
+            if args['password']:
+                g.user.set_password(args['password'])
+            db.session.add(g.user)
+            db.session.commit()
+            return None,204
+        except IntegrityError:
+            abort(400, message='Can not edit user')
 
 class DashboardUserListResource(Resource):
     decorators = [roles_required('admin')]

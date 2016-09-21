@@ -79,8 +79,8 @@ class UserModelTestCase(unittest.TestCase):
         db.session.add(r2)
         db.session.commit()
         roles_string = u.get_roles_string()
-        self.assertEqual(roles_string[0],'poweruser')
-        self.assertEqual(roles_string[1],'admin')
+        self.assertTrue('poweruser' in roles_string)
+        self.assertTrue('admin' in roles_string)
 
     def test_registered_at(self):
         u = User(username='test', email='test@test.com')

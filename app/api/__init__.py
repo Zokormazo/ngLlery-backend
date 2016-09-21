@@ -14,11 +14,12 @@ api.add_resource(LoginResource, '/login')
 api.add_resource(RegisterResource, '/register')
 api.add_resource(TokenResource, '/token')
 
-from .resources.users import UserListResource, UserResource, DashboardUserListResource, DashboardUserResource, DashboardUserRolesResource
-api.add_resource(UserListResource, '/user')
-api.add_resource(UserResource, '/user/<int:user_id>')
-api.add_resource(DashboardUserListResource, '/dashboard/user')
-api.add_resource(DashboardUserResource, '/dashboard/user/<int:user_id>')
-api.add_resource(DashboardUserRolesResource, '/dashboard/user/<int:user_id>/roles/<string:role_name>')
+from .resources.users import UserListResource, UserResource, DashboardUserListResource, DashboardUserResource, DashboardUserRolesResource, ProfileResource
+api.add_resource(UserListResource, '/users')
+api.add_resource(UserResource, '/users/<int:user_id>')
+api.add_resource(DashboardUserListResource, '/dashboard/users')
+api.add_resource(DashboardUserResource, '/dashboard/users/<int:user_id>')
+api.add_resource(DashboardUserRolesResource, '/dashboard/users/<int:user_id>/roles/<string:role_name>')
+api.add_resource(ProfileResource, '/profile')
 
 from . import views

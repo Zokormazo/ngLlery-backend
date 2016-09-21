@@ -48,7 +48,7 @@ class ApiUserResourceTestCase(unittest.TestCase):
         user_id = json_data['user']['id']
         response = self.client.get(api.url_for(UserResource,user_id=user_id), headers=self.get_headers(token))
         self.assertEqual(response.status_code,200)
-        user = json.loads(response.data.decode('utf-8'))['user']
+        user = json.loads(response.data.decode('utf-8'))
         self.assertEqual(user['username'],'test')
         self.assertFalse('email' in user)
         self.assertTrue('registered_at' in user)
@@ -74,25 +74,9 @@ class ApiUserResourceTestCase(unittest.TestCase):
         response = self.client.get(api.url_for(UserResource,user_id=0), headers=self.get_headers(token='THIS_IS_AN_INVALID_TOKEN'))
         self.assertEqual(response.status_code,401)
 
-    def test_user_resource_get_with_expired_token(self):
-        u = User(username='test', email='test@test.com')
-        u.set_password('test')
-        db.session.add(u)
-        db.session.commit()
-        self.app.config['AUTH_TOKEN_EXPIRATION_TIME'] = 1
-        response = self.client.post(api.url_for(LoginResource),
-                                    data=json.dumps({'username': 'test', 'password': 'test'}),
-                                    headers=self.get_headers())
-        json_data = json.loads(response.data.decode('utf-8'))
-        token = json_data['token']
-        sleep(2)
-        response = self.client.get(api.url_for(UserResource,user_id=0), headers=self.get_headers(token))
-        self.assertEqual(response.status_code,401)
-
     def test_user_resource_post(self):
         response = self.client.post(api.url_for(UserResource,user_id=0), headers=self.get_headers())
         self.assertEqual(response.status_code,405)
-
 
     def test_user_resource_put(self):
         response = self.client.put(api.url_for(UserResource,user_id=0), headers=self.get_headers())
