@@ -106,3 +106,34 @@ class UserRoles(db.Model):
 
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     role_id =  db.Column(db.Integer(), db.ForeignKey('role.id'))
+
+class Album(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    path = db.Column(db.String(255), nullable = False, unique=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('album.id'), index=True)
+
+    # Album information
+    title = db.Column(db.String(64))
+    description = db.Column(db.String(255))
+
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=db.func.now(), nullable = False)
+    timestamp_from = db.Column(db.DateTime)
+    timestamp_to = db.Column(db.DateTime)
+
+    # Relationships
+    parent = db.relationship('Album', remote_side=id, backref='children')
+    photos = db.relationship('Photo', backref='album', lazy='dynamic')
+
+class Photo(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    path = db.Column(db.String(255), nullable = False, unique=True)
+    album_id = db.Column(db.Integer, db.ForeignKey('album.id'))
+
+    # Photo information
+    title = db.Column(db.String(64))
+    description = db.Column(db.String(255))
+
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=db.func.now(), nullable = False)
+    timestamp = db.Column(db.DateTime)
