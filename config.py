@@ -14,6 +14,10 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    GALLERY_PATH = 'gallery/'
+    GALLERY_WATCHDOG = True
+    GALLERY_INITIAL_SCAN = True
+
     @staticmethod
     def init_app(app):
         pass
@@ -25,6 +29,10 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'db/data-test.sqlite')
+
+    GALLERY_PATH = 'testing_dir/gallery'
+    GALLERY_INITIAL_SCAN = False
+    GALLERY_WATCHDOG = False
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'db/data.sqlite')
