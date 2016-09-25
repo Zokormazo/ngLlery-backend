@@ -1,5 +1,5 @@
 #coding=utf8
-from datetime import datetime;
+from datetime import datetime
 from flask import request
 from app import db
 from app.models import User
