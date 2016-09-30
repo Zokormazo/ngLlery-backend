@@ -17,6 +17,8 @@ class Config:
     GALLERY_PATH = 'gallery/'
     GALLERY_WATCHDOG = True
     GALLERY_INITIAL_SCAN = True
+    GALLERY_THUMBNAIL_CACHING = True
+    GALLERY_THUMBNAIL_CACHE = 'cache/'
 
     @staticmethod
     def init_app(app):

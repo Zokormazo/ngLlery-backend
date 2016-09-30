@@ -1,5 +1,6 @@
 #coding=utf8
 
+import os
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
@@ -27,5 +28,8 @@ def create_app(config_name):
 
     from app.api import blueprint as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api')
+
+    from app.images import blueprint as images_blueprint
+    app.register_blueprint(images_blueprint, url_prefix='/images')
 
     return app
