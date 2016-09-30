@@ -25,7 +25,7 @@ class Scanner(object):
         self.event_handler = handler.GalleryEventHandler(self.app,self.db)
         self.observer = Observer()
 
-        self.path = app.config['GALLERY_PATH']
+        self.path = os.path.abspath(app.config['GALLERY_PATH'])
         if app.config['GALLERY_INITIAL_SCAN']:
             self.scan()
         if app.config['GALLERY_WATCHDOG']:
@@ -42,11 +42,11 @@ class Scanner(object):
     def scan(self):
         with self.app_context:
             for album in Album.query.all():
-                if not os.path.isdir(album.path):
+                if not os.path.isdir(os.path.join(self.path,album.path)):
                     self.db.session.delete(album)
             for photo in Photo.query.all():
                 try:
-                    im = Image.open(photo.path)
+                    im = Image.open(os.path.join(self.path,photo.path))
                 except IOError:
                     self.db.session.delete(photo)
             self.db.session.commit()
@@ -55,13 +55,14 @@ class Scanner(object):
 
     def _scan(self,path):
         with self.app_context:
-            parent = Album.query.filter_by(path=path).first()
+            parent = Album.query.filter_by(path=os.path.relpath(path, self.path)).first()
             for file in os.listdir(path):
                 file_path = os.path.join(path,file)
+                relative_path = os.path.relpath(file_path, self.path)
                 if os.path.isdir(file_path):
-                    album = Album.query.filter_by(path=file_path).first()
+                    album = Album.query.filter_by(path=relative_path).first()
                     if not album:
-                        album = Album(path=file_path)
+                        album = Album(path=relative_path, title=file)
                         self.db.session.add(album)
                         if parent:
                             parent.children.append(album)
@@ -70,10 +71,10 @@ class Scanner(object):
                     self._scan(file_path)
                 elif parent:
                     try:
-                        photo = Photo.query.filter_by(path=file_path).first()
+                        photo = Photo.query.filter_by(path=relative_path).first()
                         im = Image.open(file_path)
                         if not photo:
-                            photo = Photo(path=file_path)
+                            photo = Photo(path=relative_path)
                             parent.photos.append(photo)
                             self.db.session.add(photo)
                             self.db.session.add(parent)

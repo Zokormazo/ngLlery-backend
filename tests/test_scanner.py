@@ -84,33 +84,33 @@ class ScannerTestCase(unittest.TestCase):
         shutil.copy(TEST_PHOTO_FILE,os.path.join(path,'photo1.jpg'))
         self.app.scanner.scan()
         self.assertEqual(Album.query.count(),4)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1')).first().children),1)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().children),1)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/album2/album3')).first().children),0)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album4')).first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album1').first().children),1)
+        self.assertEqual(len(Album.query.filter_by(path='album1/album2').first().children),1)
+        self.assertEqual(len(Album.query.filter_by(path='album1/album2/album3').first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album4').first().children),0)
         self.assertEqual(Photo.query.count(),9)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1')).first().photos.count(),4)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().photos.count(),3)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/album2/album3')).first().photos.count(),0)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album4')).first().photos.count(),2)
-        '''
-            Test 3:
+        self.assertEqual(Album.query.filter_by(path='album1').first().photos.count(),4)
+        self.assertEqual(Album.query.filter_by(path='album1/album2').first().photos.count(),3)
+        self.assertEqual(Album.query.filter_by(path='album1/album2/album3').first().photos.count(),0)
+        self.assertEqual(Album.query.filter_by(path='album4').first().photos.count(),2)
+        #'''
+            #Test 3:
 
-            album1/ [d]
-                album2/ [d]
-                    photo1.jpg [f:JPEG]
-                    photo2.jpg [f:None]
-                    photo3.jpg [f:JPEG]
-                photo1.jpg/ [d]
-                    photo1.jpg [f:JPEG]
-                photo2.jpg [f:JPEG]
-            album3/ [d]
-                photo1.jpg [f:JPEG]
-                photo2.jpg [f:JPEG]
-            album4 [f:JPEG]
-            photo1.jpg [f:JPEG]
+            #album1/ [d]
+                #album2/ [d]
+                    #photo1.jpg [f:JPEG]
+                    #photo2.jpg [f:None]
+                    #photo3.jpg [f:JPEG]
+                #photo1.jpg/ [d]
+                    #photo1.jpg [f:JPEG]
+                #photo2.jpg [f:JPEG]
+            #album3/ [d]
+                #photo1.jpg [f:JPEG]
+                #photo2.jpg [f:JPEG]
+            #album4 [f:JPEG]
+            #photo1.jpg [f:JPEG]
             
-        '''
+        #'''
         shutil.rmtree(os.path.join(path, 'album1/album2/album3'))
         shutil.copy(TEST_NON_PHOTO_FILE,os.path.join(path,'album1/album2/photo2.jpg'))
         os.remove(os.path.join(path,'album1/photo1.jpg'))
@@ -122,18 +122,18 @@ class ScannerTestCase(unittest.TestCase):
         shutil.copy(TEST_PHOTO_FILE, os.path.join(path, 'album4'))
         self.app.scanner.scan()
         self.assertEqual(Album.query.count(),4)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1')).first().children),2)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().children),0)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/photo1.jpg')).first().children),0)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album3')).first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album1').first().children),2)
+        self.assertEqual(len(Album.query.filter_by(path='album1/album2').first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album1/photo1.jpg').first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album3').first().children),0)
         self.assertEqual(Photo.query.count(),6)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1')).first().photos.count(),1)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().photos.count(),2)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/photo1.jpg')).first().photos.count(),1)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album3')).first().photos.count(),2)
-        '''
-            Test 4: empty directory
-        '''
+        self.assertEqual(Album.query.filter_by(path='album1').first().photos.count(),1)
+        self.assertEqual(Album.query.filter_by(path='album1/album2').first().photos.count(),2)
+        self.assertEqual(Album.query.filter_by(path='album1/photo1.jpg').first().photos.count(),1)
+        self.assertEqual(Album.query.filter_by(path='album3').first().photos.count(),2)
+        #'''
+            #Test 4: empty directory
+        #'''
         shutil.rmtree(path)
         os.mkdir(path)
         self.app.scanner.scan()
@@ -148,33 +148,33 @@ class ScannerTestCase(unittest.TestCase):
         shutil.copy(TEST_NON_PHOTO_FILE,os.path.join(path,'album1/album2/photo1.jpg'))
         sleep(1)
         self.assertEqual(Album.query.count(),3)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1')).first().children),1)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().children),1)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/album2/album3')).first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album1').first().children),1)
+        self.assertEqual(len(Album.query.filter_by(path='album1/album2').first().children),1)
+        self.assertEqual(len(Album.query.filter_by(path='album1/album2/album3').first().children),0)
         self.assertEqual(Photo.query.count(),1)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1')).first().photos.count(),1)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().photos.count(),0)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/album2/album3')).first().photos.count(),0)
+        self.assertEqual(Album.query.filter_by(path='album1').first().photos.count(),1)
+        self.assertEqual(Album.query.filter_by(path='album1/album2').first().photos.count(),0)
+        self.assertEqual(Album.query.filter_by(path='album1/album2/album3').first().photos.count(),0)
         os.makedirs(os.path.join(path,'album4'))
         shutil.copy(TEST_PHOTO_FILE,os.path.join(path, 'album4/photo1.jpg'))
         shutil.rmtree(os.path.join(path,'album1/album2/album3'))
         sleep(1)
         self.assertEqual(Album.query.count(),3)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1')).first().children),1)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().children),0)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album4')).first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album1').first().children),1)
+        self.assertEqual(len(Album.query.filter_by(path='album1/album2').first().children),0)
+        self.assertEqual(len(Album.query.filter_by(path='album4').first().children),0)
         self.assertEqual(Photo.query.count(),2)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1')).first().photos.count(),1)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album1/album2')).first().photos.count(),0)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album4')).first().photos.count(),1)
+        self.assertEqual(Album.query.filter_by(path='album1').first().photos.count(),1)
+        self.assertEqual(Album.query.filter_by(path='album1/album2').first().photos.count(),0)
+        self.assertEqual(Album.query.filter_by(path='album4').first().photos.count(),1)
         os.rename(os.path.join(path,'album1/photo1.jpg'),os.path.join(path,'album4/photo2.jpg'))
         os.rename(os.path.join(path,'album1/album2'),os.path.join(path,'album4/album2'))
         shutil.rmtree(os.path.join(path,'album1'))
         sleep(1)
         self.assertEqual(Album.query.count(),2)
-        self.assertEqual(len(Album.query.filter_by(path=os.path.join(path, 'album4')).first().children),1)
+        self.assertEqual(len(Album.query.filter_by(path='album4').first().children),1)
         self.assertEqual(Photo.query.count(),2)
-        self.assertEqual(Album.query.filter_by(path=os.path.join(path, 'album4')).first().photos.count(),2)
+        self.assertEqual(Album.query.filter_by(path='album4').first().photos.count(),2)
         os.rename(os.path.join(path,'album4/photo1.jpg'),os.path.join(path,'photo1.jpg'))
         os.rename(os.path.join(path,'album4/photo2.jpg'),os.path.join(path,'photo2.jpg'))
         sleep(1)
