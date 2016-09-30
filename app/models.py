@@ -6,6 +6,7 @@ import hmac
 import base64
 
 from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from sqlalchemy.ext.hybrid import hybrid_property
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -124,6 +125,15 @@ class Album(db.Model):
     # Relationships
     parent = db.relationship('Album', remote_side=id, backref='children')
     photos = db.relationship('Photo', backref='album', lazy='dynamic')
+
+    # Hybrid propierties
+    @hybrid_property
+    def children_count(self):
+        return len(self.children)
+
+    @hybrid_property
+    def photos_count(self):
+        return self.photos.count()
 
 class Photo(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

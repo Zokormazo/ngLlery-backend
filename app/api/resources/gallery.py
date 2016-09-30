@@ -13,7 +13,9 @@ album_fields = {
     'title': fields.String,
     'description': fields.String,
     'timestamp_from': fields.DateTime,
-    'timestamp_to': fields.DateTime
+    'timestamp_to': fields.DateTime,
+    'children_count': fields.Integer,
+    'photos_count': fields.Integer
 }
 
 dash_album_fields = {
@@ -23,7 +25,9 @@ dash_album_fields = {
     'description': fields.String,
     'created_at': fields.DateTime,
     'timestamp_from': fields.DateTime,
-    'timestamp_to': fields.DateTime
+    'timestamp_to': fields.DateTime,
+    'children_count': fields.Integer,
+    'photos_count': fields.Integer
 }
 
 photo_fields = {
