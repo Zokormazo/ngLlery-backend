@@ -7,7 +7,7 @@ from flask.ext.migrate import Migrate, MigrateCommand
 
 from os import path, getenv
 
-from app.models import User, Role
+from app.models import User, Role, Album, Photo
 
 # load environment variables from .env
 if path.exists('.env'):
@@ -29,7 +29,7 @@ manager.add_command("db", MigrateCommand)
 
 # define shell context
 def make_shell_context():
-    return dict(app=app, db=db, User=User, Role=Role)
+    return dict(app=app, db=db, User=User, Role=Role, Album=Album, Photo=Photo)
 # add shell command to script manager
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
