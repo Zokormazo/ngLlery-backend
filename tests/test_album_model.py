@@ -33,7 +33,7 @@ class AlbumModelTestCase(unittest.TestCase):
         self.assertEqual(album1.photos_count,3)
         self.assertEqual(album2.photos_count,0)
 
-        def test_children_count(self):
+    def test_children_count(self):
         album1 = Album(path='/test1')
         album2 = Album(path='/test2')
         child1 = Album(path='/test1/child1', parent=album1)
