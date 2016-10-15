@@ -135,6 +135,13 @@ class Album(db.Model):
     def photos_count(self):
         return self.photos.count()
 
+    @hybrid_property
+    def caption_photo_id(self):
+        if self.photos.count() > 0:
+            return self.photos.first().id;
+        else:
+            return None
+
 class Photo(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     path = db.Column(db.String(255), nullable = False, unique=True)

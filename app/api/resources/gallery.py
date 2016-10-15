@@ -15,7 +15,8 @@ album_fields = {
     'timestamp_from': fields.DateTime,
     'timestamp_to': fields.DateTime,
     'children_count': fields.Integer,
-    'photos_count': fields.Integer
+    'photos_count': fields.Integer,
+    'caption_photo_id': fields.Integer
 }
 
 dash_album_fields = {
@@ -27,7 +28,8 @@ dash_album_fields = {
     'timestamp_from': fields.DateTime,
     'timestamp_to': fields.DateTime,
     'children_count': fields.Integer,
-    'photos_count': fields.Integer
+    'photos_count': fields.Integer,
+    'caption_photo_id': fields.Integer
 }
 
 photo_fields = {
@@ -74,7 +76,7 @@ class AlbumChildrenListResource(Resource):
 
 class AlbumPhotosListResource(Resource):
     decorators = [login_required]
-    
+
     def get(self, album_id):
         album = Album.query.get(album_id)
         if not album:
@@ -84,7 +86,7 @@ class AlbumPhotosListResource(Resource):
 
 class PhotoResource(Resource):
     decorators = [login_required]
-    
+
     def get(self, photo_id):
         photo = Photo.query.get(photo_id)
         if not photo:
@@ -93,7 +95,7 @@ class PhotoResource(Resource):
 
 class DashboardAlbumListResource(Resource):
     decorators = [roles_required('admin')]
-    
+
     def get(self):
         albums = Album.query.filter_by(parent=None)
         return [marshal(album, dash_album_fields) for album in albums]
@@ -144,7 +146,7 @@ class DashboardAlbumChildrenListResource(Resource):
             abort(404, message="Album not found")
         children = Album.query.filter_by(parent=album)
         return [marshal(child, dash_album_fields) for child in children]
-    
+
 
 class DashboardAlbumPhotosListResource(Resource):
     decorators = [roles_required('admin')]
