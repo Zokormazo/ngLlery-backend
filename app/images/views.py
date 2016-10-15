@@ -14,7 +14,8 @@ def photo_file(id):
     Return raw photo file
     '''
     photo = Photo.query.get_or_404(id)
-    path = os.path.join(current_app.config['GALLERY_PATH'],photo.path)
+    path = os.path.join(os.path.abspath(current_app.config['GALLERY_PATH']),photo.path)
+    print(path)
     if os.path.exists(path):
         return send_file(path)
     else:
@@ -32,7 +33,10 @@ def photo_thumbnail(id, width):
     thumb_path = os.path.join(cache_dir,str(id))
     if not os.path.exists(thumb_path):
         if not os.path.isdir(cache_dir):
-            os.makedirs(cache_dir)
+            try:
+                os.makedirs(cache_dir)
+            except IOError:
+                pass
         im = Image.open(photo_path)
         im.thumbnail((width, 99999999),Image.ANTIALIAS)
         im.save(thumb_path, 'JPEG')
