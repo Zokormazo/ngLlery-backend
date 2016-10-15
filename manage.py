@@ -2,7 +2,7 @@
 #coding=utf8
 
 from app import create_app, db
-from flask.ext.script import Manager, Shell
+from flask.ext.script import Manager, Shell, Server
 from flask.ext.migrate import Migrate, MigrateCommand
 
 from os import path, getenv
@@ -23,6 +23,9 @@ app = create_app(getenv('FLASK_CONFIG') or 'default')
 
 manager = Manager(app)
 migrate = Migrate(app,db)
+
+# add runserver to script manager
+manager.add_command("runserver", Server(use_debugger=True, use_reloader=False, threaded=True))
 
 # add db command to script manager
 manager.add_command("db", MigrateCommand)
